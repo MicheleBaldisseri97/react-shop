@@ -1,8 +1,8 @@
 import type { Product } from '../../model/Product.ts';
 
 interface ProductCardProps {
-  product: Partial<Product>;
-  onAddToCart: (product: Partial<Product>) => void;
+  product: Product;
+  onAddToCart: (product: Product) => void;
 }
 
 export const ProductCard = ({ product, onAddToCart }: ProductCardProps) => {

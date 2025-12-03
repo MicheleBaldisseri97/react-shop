@@ -3,11 +3,15 @@ import { useEffect, useState } from 'react';
 import { pb } from '../../pocketbase.ts';
 import { ProductCard } from './ProductCard.tsx';
 import { ServerError } from '../../shared';
+import { useCart, useCartPanel } from '../../services/cart';
 
 export const ShopPage = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [pending, setPending] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
+
+  const openCartPanel = useCartPanel((state) => state.openOverlay);
+  const addToCart = useCart((state) => state.addToCart);
 
   useEffect(() => {
     pb.collection('products')
@@ -20,8 +24,9 @@ export const ShopPage = () => {
       .finally(() => setPending(false));
   }, []);
 
-  function addToCart(p: Partial<Product>) {
-    console.log(p);
+  function handleAddToCart(p: Product) {
+    openCartPanel();
+    addToCart(p);
   }
 
   return (
@@ -35,7 +40,7 @@ export const ShopPage = () => {
         {products.map((p) => {
           return (
             <div key={p.id}>
-              <ProductCard product={p} onAddToCart={() => addToCart(p)} />
+              <ProductCard product={p} onAddToCart={(p) => handleAddToCart(p)} />
             </div>
           );
         })}
