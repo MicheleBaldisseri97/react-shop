@@ -40,8 +40,6 @@ export const CheckoutPage = () => {
           CONFIRM ORDER
         </button>
       </form>
-
-      <pre>{JSON.stringify(user, null, 2)}</pre>
     </div>
   );
 };
