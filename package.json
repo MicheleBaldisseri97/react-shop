@@ -9,11 +9,10 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "format:html": "prettier --write \"**/*.html\"",
-    "format:check:html": "prettier --check \"**/*.html\"",
     "preview": "vite preview"
   },
   "dependencies": {
+    "pocketbase": "^0.26.3",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-router-dom": "^7.9.6"
