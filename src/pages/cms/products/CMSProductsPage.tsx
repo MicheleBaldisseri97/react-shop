@@ -1,23 +1,40 @@
 import { useProductsService } from '../../../services/products/useProductsService.ts';
+import { useEffect } from 'react';
+import { ServerError } from '../../../shared';
+import { CMSProductsList } from './components/ProductsList.tsx';
+import { CMSProductForm } from './components/CMSProductForm.tsx';
 
 export function CMSProductsPage() {
-  const { actions, state } = useProductsService();
+  const { state, actions } = useProductsService();
 
-  function getProductsHandler() {
+  useEffect(() => {
     actions.getProducts();
-  }
+  }, []);
 
   return (
     <div>
       <h1 className="title">CMS</h1>
-      Pagina Prodotti
-      <hr className="my-8" />
+
       {state.pending && <div>loading...</div>}
-      {state.error && <div>error!!!!</div>}
-      <button className="btn primary" onClick={getProductsHandler}>
-        GET
+      {state.error && <ServerError message={state.error} />}
+
+      <CMSProductForm
+        activeItem={state.activeItem}
+        onClose={actions.resetActiveItem}
+        onAdd={actions.addProduct}
+        onEdit={actions.editProduct}
+      />
+
+      <CMSProductsList
+        items={state.products}
+        activeItem={state.activeItem}
+        onEditItem={actions.setActiveItem}
+        onDeleteItem={actions.deleteProduct}
+      />
+
+      <button className="btn primary" onClick={() => actions.setActiveItem({})}>
+        ADD NEW
       </button>
-      <pre>{JSON.stringify(state, null, 2)}</pre>
     </div>
   );
 }

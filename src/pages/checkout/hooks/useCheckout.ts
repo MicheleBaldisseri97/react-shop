@@ -3,6 +3,7 @@ import { type ChangeEvent, type FormEvent, useState } from 'react';
 import { selectCartList, selectTotalCartCost, useCart } from '../../../services/cart';
 import { useNavigate } from 'react-router-dom';
 import { EMAIL_REGEX } from '../CheckoutPage.tsx';
+import { useOrdersService } from '../../../services/orders';
 
 export function useCheckout() {
   const navigate = useNavigate();
@@ -11,10 +12,9 @@ export function useCheckout() {
 
   const totalCartCost = useCart(selectTotalCartCost);
   const clearCart = useCart((state) => state.clearCart);
+
+  const { addOrder } = useOrdersService();
   const order = useCart(selectCartList);
-  const isNameValid = user.name.length;
-  const isEmailValid = user.email.match(EMAIL_REGEX);
-  const isValid = isNameValid && isEmailValid;
 
   function changeHandler(e: ChangeEvent<HTMLInputElement>) {
     const name = e.currentTarget.name;
@@ -31,10 +31,16 @@ export function useCheckout() {
       status: 'pending',
       total: totalCartCost,
     };
-    console.log(orderInfo);
-    clearCart();
-    navigate('/thanks');
+
+    addOrder(orderInfo).then(() => {
+      clearCart();
+      navigate('/thanks');
+    });
   }
+
+  const isNameValid = user.name.length;
+  const isEmailValid = user.email.match(EMAIL_REGEX);
+  const isValid = isNameValid && isEmailValid;
 
   return {
     validators: {
